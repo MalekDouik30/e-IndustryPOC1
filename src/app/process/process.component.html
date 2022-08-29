@@ -1,0 +1,100 @@
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">Logo</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+      <div class="navbar-nav">
+        <a class="nav-item nav-link active" href="#">Flowable Task </a>
+        <!--a class="nav-item nav-link" href="#">Features</a-->
+      </div>
+    </div>
+
+    <ul class="navbar-nav flex-row ml-md-auto d-none d-md-flex">
+        <li class="nav-item dropdown">
+            <a class="nav-item nav-link" href="#">{{userFirstName}} {{userLastName}}</a>
+        </li>
+        <li>
+            <button type="button" class="btn btn-secondary btn-sm" style="margin-right: 20px;" (click)="onSignOut()"><i class="bi bi-box-arrow-left"></i> Déconnexion </button>
+        </li>
+    </ul>
+  </nav>
+  <br>
+  <div class="container">
+    
+    <div class="row">
+      <!--1. Application : --> 
+      <h4>Applications : </h4><br><br><br>
+      <ng-container *ngFor="let item of listApplications" >
+        <div class="card border-primary mb-3" (click)="onSelectedAppliction(item.appDefinitionKey)"  style="max-width: 18rem; margin-left: 10px;">
+          <div class="card-header">{{item.name}}</div>
+          <div class="card-body">
+          <h1 [ngClass]="item.icon"></h1>          
+            <i><h5 class="card-title">{{item.appDefinitionId}}</h5></i>
+            <p class="card-text">{{item.description}}</p>
+          </div>
+        </div>
+    </ng-container>
+    </div>
+    
+    
+    <div class="row">
+      <!--2. Process : --> 
+      <div *ngIf="listProcessOfSelectedApp.length>0" class="d-flex flex-column align-items-stretch flex-shrink-0 bg-white" >
+        <a href="/" class="d-flex align-items-center flex-shrink-0 p-3 link-dark text-decoration-none border-bottom">
+          <svg class="bi me-2" width="30" height="24"><use xlink:href="#bootstrap"></use></svg>
+          <span class="fs-5 fw-semibold">List des process</span>
+        </a>
+        <div *ngFor ="let item of listProcessOfSelectedApp" class="list-group list-group-flush border-bottom scrollarea">
+          <a class="list-group-item list-group-item-action active py-3 lh-tight" aria-current="true" (click)="onSelectProcess(item.id)">
+            <div class="d-flex w-100 align-items-center justify-content-between">
+              <strong class="mb-1">{{ item.name }}</strong>
+              <small>V {{item.version}}</small>
+            </div>
+            <div class="col-10 mb-1 small">{{ item.description }} </div>
+            <button type="button" class="btn btn-light" (click)="onCreateProcessInstance(item)">Créer une nouvelle instance</button>
+
+          </a>
+        </div>
+
+      <!--3. Instances : --> 
+      <div class="container">
+          <div class="row">
+            <div class="col">
+              <div class="d-flex flex-column flex-shrink-0 bg-light" style="width: 4.5rem;" *ngIf="listInstanceProcess.length>0">
+                  <div class="row">
+                  <ul class="nav nav-pills nav-flush flex-column mb-auto text-center">
+                    <span class="fs-5 fw-semibold">List des instances</span>
+                    <li class="nav-item" *ngFor="let item of listInstanceProcess">
+                      <a class="nav-link py-3 border-bottom" aria-current="page" title="" data-bs-toggle="tooltip" data-bs-placement="right" (click)="onSelectInstanceProcess(item.id)">
+                        <h4>{{item.name}}</h4>
+                        <p>Process Definition Id : {{ item.processDefinitionId }}</p>
+                        <p>Date de création : {{ item.startTime }}</p>
+                        <button type="button" class="btn btn-danger"  (click)="onCancelInstanceProcess(item.id)">Annuler instance</button>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <!--4. Formulaire : --> 
+            <div class="col-9">
+              <div *ngIf="listTask.length >0" class="col" >
+                <app-json-form [jsonFromData]="formData" [idTaskJsonComponent]="idTask" [idFormJsonComponent]="idForm" ></app-json-form>
+              </div>
+            </div>
+           
+          </div>
+     </div>
+
+     </div>
+    </div>
+
+  
+
+</div>
+
+

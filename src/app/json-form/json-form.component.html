@@ -1,0 +1,76 @@
+<form [formGroup]="myForm" (ngSubmit)="onSubmit()">
+    <ng-container *ngFor="let control of jsonFromData?.fields">
+
+        <!--Headline  -->
+        <h4 *ngIf="control.type === 'headline'">{{ control.name }}</h4>
+        <label *ngIf="control.type == 'expression'"> </label>
+        <label *ngIf="control.type != 'headline' && control.type != 'expression' ">{{ control.name }}  </label>
+        <label *ngIf="control.required" style="color:red ;"> * </label>
+        
+        <!--Input  -->
+        <input *ngIf="['text','password','email','number','search','tel','url','date'].includes(control.type)"
+            [type]="control.type"
+            class="form-control"
+            [formControlName]="control.name"
+            [value]="control.value"
+            [id]="control.id"
+            [required]="control.required"
+            [readonly]="control.readOnly"
+            [placeholder]="control.placeholder"/>
+            
+        <!--Radio button -->
+        <ng-container *ngIf="control.type == 'radio'">
+            <ng-container *ngFor="let i of control.options;let index=index">
+                <div class="form-check">
+                <input  type="radio" class="form-check-input" name="{{control.name}}" id="{{control.name+index}}" [formControlName]="control.name"
+                value="{{i.name}}"/>
+                <label class="form-check-label" for="{{control.name+index}}"> {{i.name}}</label>
+                </div>
+            </ng-container>
+        </ng-container>
+
+        <!--checkbox -->
+        <input *ngIf="control.type === 'checkbox'" type="checkbox" [formControlName]="control.name" [checked]="control.value"/>
+
+        <!--Textarea -->
+        <textarea *ngIf="control.type === 'textarea'" class="form-control" [formControlName]="control.name" [value]="control.value"></textarea>
+
+         <!--Drop down / Select option -->
+         <select *ngIf="control.type === 'dropdown'" class="form-select" [formControlName]="control.name">
+            <option *ngFor="let i of control.options" value="{{i.name}}"> {{i.name}} </option>
+         </select>
+
+
+          <!--Upload -->
+        <input *ngIf="control.type === 'upload' && (control.value == null || control.value == '')"
+             (change)="onUploadFile($event,control.name)" 
+             class="form-control form-control-lg" 
+             type="file"
+             />
+
+        <!-- Read Uploaded file -->
+        <ng-container *ngIf="control.type === 'upload' && control.value != null && control.value != '' ">
+            <br>
+            <ng-container *ngFor="let item of control.value">
+                <a href="{{API_URL.flowable_task+'app/rest/content/'+item.id+'/raw'}}" download="{{item.name}}" > {{item.name}}</a> 
+                    <i (click)='onRemoveFile(item.id)' class="bi bi-x-lg"></i>
+            </ng-container>
+            <br>
+        </ng-container>
+       
+        <!-- Expression -->
+        <input *ngIf="control.type === 'expression'"
+            type="text"
+            class="form-control"
+            [value]="control.value"
+            [required]="control.required"
+            [readonly]="true"
+        />
+    </ng-container>
+    <br>
+    <button type="submit" class="btn btn-success" [disabled]="!myForm.valid"> Suivant </button>
+  </form>
+
+
+
+
